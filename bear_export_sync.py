@@ -38,7 +38,7 @@ or leave list empty for all notes: `limit_export_to_tags = []`
 '''
 
 make_tag_folders = True  # Exports to folders using first tag only, if `multi_tag_folders = False`
-multi_tag_folders = True  # Copies notes to all 'tag-paths' found in note!
+multi_tag_folders = False  # Copies notes to all 'tag-paths' found in note!
                           # Only active if `make_tag_folders = True`
 hide_tags_in_comment_block = True  # Hide tags in HTML comments: `<!-- #mytag -->`
 
@@ -294,7 +294,8 @@ def sub_path_from_tag(temp_path, filename, md_text):
         tag_path = os.path.join(temp_path, sub_path)
         if not os.path.exists(tag_path):
             os.makedirs(tag_path)
-        paths.append(os.path.join(tag_path, filename))      
+        # paths.append(os.path.join(tag_path, filename))      
+        paths = [os.path.join(tag_path, filename)]
     return paths
 
 
@@ -439,6 +440,11 @@ def rsync_files_from_temp():
             subprocess.call(['rsync', '-r', '-t', '-E', '--delete',
                              '--exclude', 'BearImages/',
                              '--exclude', '.Ulysses*',
+                             '--exclude', '.git',
+                             '--exclude', '.gitignore',
+                             '--exclude', '.DS_Store',
+                             '--exclude', '.obsidian',
+                             '--exclude', 'obsidian.css',
                              '--exclude', '*.Ulysses_Public_Filter',
                              temp_path + "/", dest_path])
         else:
